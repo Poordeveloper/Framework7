@@ -279,6 +279,7 @@ app.initClickEvents = function () {
                 if (url.indexOf('#') === 0 && url !== '#')  {
                     if (view.params.domCache) {
                         pageName = url.split('#')[1];
+                        url = undefined;
                     }
                     else return;
                 }
