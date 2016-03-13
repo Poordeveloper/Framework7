@@ -99,6 +99,7 @@ app.prompt = function (text, title, callbackOk, callbackCancel) {
         }
     });
 };
+/*
 app.modalLogin = function (text, title, callbackOk, callbackCancel) {
     if (typeof title === 'function') {
         callbackCancel = arguments[2];
@@ -168,6 +169,7 @@ app.showIndicator = function () {
 app.hideIndicator = function () {
     $('.preloader-indicator-overlay, .preloader-indicator-modal').remove();
 };
+*/
 // Action Sheet
 app.actions = function (target, params) {
     var toPopover = false, modal, groupSelector, buttonSelector;
@@ -267,6 +269,7 @@ app.actions = function (target, params) {
     if (!toPopover) app.openModal(modal);
     return modal[0];
 };
+/*
 app.popover = function (modal, target, removeOnClose) {
     if (typeof removeOnClose === 'undefined') removeOnClose = true;
     if (typeof modal === 'string' && modal.indexOf('<') >= 0) {
@@ -462,6 +465,7 @@ app.popover = function (modal, target, removeOnClose) {
     app.openModal(modal);
     return modal[0];
 };
+*/
 app.popup = function (modal, removeOnClose) {
     if (typeof removeOnClose === 'undefined') removeOnClose = true;
     if (typeof modal === 'string' && modal.indexOf('<') >= 0) {
@@ -508,6 +512,7 @@ app.pickerModal = function (modal, removeOnClose) {
     app.openModal(modal);
     return modal[0];
 };
+/*
 app.loginScreen = function (modal) {
     if (!modal) modal = '.login-screen';
     modal = $(modal);
@@ -520,6 +525,7 @@ app.loginScreen = function (modal) {
     app.openModal(modal);
     return modal[0];
 };
+*/
 app.openModal = function (modal) {
     modal = $(modal);
     var isModal = modal.hasClass('modal');
