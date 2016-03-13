@@ -51,7 +51,6 @@ var Messages = function (container, params) {
         if (!m.container.hasClass('messages-auto-layout')) m.container.addClass('messages-auto-layout');
         m.container.find('.message').each(function () {
             var message = $(this);
-            if (message.find('.message-text img').length > 0) message.addClass('message-pic');
             if (message.find('.message-avatar').length > 0) message.addClass('message-with-avatar');
         });
         m.container.find('.message').each(function () {
@@ -64,12 +63,10 @@ var Messages = function (container, params) {
             }
             else message.removeClass('message-last message-with-tail');
 
-            if (prev.length === 0) {
+            if (prev.length === 0 || (message.attr('id') && message.find('.message-name').length > 0)) {
                 message.addClass('message-first');
             }
-            else message.removeClass('message-first');
-
-            if (prev.length > 0 && prev.find('.message-name').length > 0 && message.find('.message-name').length > 0) {
+            else if (prev.length > 0 && prev.find('.message-name').length > 0 && message.find('.message-name').length > 0) {
                 if (prev.find('.message-name').text() !== message.find('.message-name').text()) {
                     prev.addClass('message-last message-with-tail');
                     message.addClass('message-first');
@@ -101,7 +98,6 @@ var Messages = function (container, params) {
             var props = newMessages[i] || {};
             props.type = props.type || 'sent';
             if (!props.text) continue;
-            props.hasImage = props.text.indexOf('<img') >= 0;
             if (animate) props.position = method === 'append' ? 'bottom' : 'top';
 
             newMessagesHTML += m.template(props);

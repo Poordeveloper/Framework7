@@ -107,10 +107,18 @@
         "dependencies" : []
     },
     "messages": {
-        "js" : ["src/js/messagebar.js", "src/js/messages.js"],
+        "js" : ["src/js/messages.js"],
         "less": {
-            "ios": ["src/less/ios/messagebar.less", "src/less/ios/messages.less"],
-            "material": ["src/less/material/messagebar.less", "src/less/material/messages.less"]
+            "ios": ["src/less/ios/messages.less"],
+            "material": ["src/less/material/messages.less"]
+        },
+        "dependencies" : []
+    },
+    "messagebar": {
+        "js" : ["src/js/messagebar.js"],
+        "less": {
+            "ios": ["src/less/ios/messagebar.less"],
+            "material": ["src/less/material/messagebar.less"]
         },
         "dependencies" : []
     },
