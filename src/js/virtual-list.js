@@ -181,7 +181,8 @@ var VirtualList = function (listBlock, params) {
                     vl.tempDomElement.innerHTML = vl.template(items[i], {index: index}).trim();
                 }
                 else if (vl.params.renderItem) {
-                    vl.tempDomElement.innerHTML = vl.params.renderItem(index, items[i]).trim();
+                    var d_ = vl.params.renderItem(index, items[i], vl.tempDomElement);
+                    if (d_) vl.tempDomElement.innerHTML = d_.trim();
                 }
                 else {
                     vl.tempDomElement.innerHTML = items[i].trim();
