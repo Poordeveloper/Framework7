@@ -10,9 +10,7 @@
             "src/js/router.js",
             "src/js/clicks.js",
             "src/js/resize.js",
-            "src/js/panels.js",
-            "src/js/lazy-load.js",
-            "src/js/material-preloader.js"
+            "src/js/panels.js"
         ],
         "less" : {
             "ios" : [
@@ -31,7 +29,6 @@
                 "src/less/ios/contacts.less",
                 "src/less/ios/forms.less",
                 "src/less/ios/panels.less",
-                "src/less/ios/lazy-load.less",
                 "src/less/ios/statusbar.less",
                 "src/less/ios/preloader.less"
             ],
@@ -53,7 +50,6 @@
                 "src/less/material/forms.less",
                 "src/less/material/floating-button.less",
                 "src/less/material/panels.less",
-                "src/less/material/lazy-load.less",
                 "src/less/material/statusbar.less",
                 "src/less/material/preloader.less"
             ]
