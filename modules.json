@@ -74,11 +74,9 @@
         ],
         "less" :  {
             "ios" : [
-                "src/less/ios/login-screen.less",
                 "src/less/ios/disabled.less"
             ],
             "material" : [
-                "src/less/material/login-screen.less",
                 "src/less/material/ripple.less",
                 "src/less/material/disabled.less"
             ]
