@@ -22,19 +22,19 @@ app.pushStateClearQueue = function () {
 };
 
 app.initPushState = function () {
-    var blockPopstate = true;
+    app.blockPopstate = true;
     $(window).on('load', function () {
         setTimeout(function () {
-            blockPopstate = false;
+            app.blockPopstate = false;
         }, 0);
     });
 
     if (document.readyState && document.readyState === 'complete') {
-        blockPopstate = false;
+        app.blockPopstate = false;
     }
 
     function handlePopState(e) {
-        if (blockPopstate) return;
+        if (app.blockPopstate) return;
         var mainView = app.mainView;
         if (!mainView) return;
         var state = e.state;

@@ -94,7 +94,7 @@ var View = function (selector, params) {
     var viewURL = docLocation;
     var pushStateSeparator = app.params.pushStateSeparator;
     var pushStateRoot = app.params.pushStateRoot;
-    if (app.params.pushState && view.main) {
+    if (app.params.pushState) {
         if (pushStateRoot) {
             viewURL = pushStateRoot;
         }
@@ -409,7 +409,7 @@ var View = function (selector, params) {
             allowViewTouchMove = true;
             view.allowPageChange = true;
             if (pageChanged) {
-                if (app.params.pushState && view.main) history.back();
+                if (app.params.pushState) history.back();
                 // Page after animation callback
                 app.pageBackCallback('after', view, {pageContainer: activePage[0], url: url, position: 'center', newPage: previousPage, oldPage: activePage, swipeBack: true});
                 app.pageAnimCallback('after', view, {pageContainer: previousPage[0], url: url, position: 'left', newPage: previousPage, oldPage: activePage, swipeBack: true});
@@ -546,7 +546,7 @@ var View = function (selector, params) {
     };
 
     // Push State on load
-    if (app.params.pushState && app.params.pushStateOnLoad && view.main) {
+    if (app.params.pushState && app.params.pushStateOnLoad) {
         var pushStateUrl;
         var pushStateUrlSplit = docLocation.split(pushStateSeparator)[1];
         if (pushStateRoot) {
