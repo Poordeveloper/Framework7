@@ -13,7 +13,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: March 28, 2016
+ * Released on: March 31, 2016
  */
 (function () {
 
@@ -279,7 +279,7 @@
             var viewURL = docLocation;
             var pushStateSeparator = app.params.pushStateSeparator;
             var pushStateRoot = app.params.pushStateRoot;
-            if (app.params.pushState && view.main) {
+            if (app.params.pushState) {
                 if (pushStateRoot) {
                     viewURL = pushStateRoot;
                 }
@@ -594,7 +594,7 @@
                     allowViewTouchMove = true;
                     view.allowPageChange = true;
                     if (pageChanged) {
-                        if (app.params.pushState && view.main) history.back();
+                        if (app.params.pushState) history.back();
                         // Page after animation callback
                         app.pageBackCallback('after', view, {pageContainer: activePage[0], url: url, position: 'center', newPage: previousPage, oldPage: activePage, swipeBack: true});
                         app.pageAnimCallback('after', view, {pageContainer: previousPage[0], url: url, position: 'left', newPage: previousPage, oldPage: activePage, swipeBack: true});
@@ -731,7 +731,7 @@
             };
         
             // Push State on load
-            if (app.params.pushState && app.params.pushStateOnLoad && view.main) {
+            if (app.params.pushState && app.params.pushStateOnLoad) {
                 var pushStateUrl;
                 var pushStateUrlSplit = docLocation.split(pushStateSeparator)[1];
                 if (pushStateRoot) {
@@ -756,8 +756,16 @@
                         app.router.load(view, {pageName: historyState.pageName, url: historyState.url, animatePages: pushStateAnimatePages, pushState: false});
                     }
                     else if (pushStateSeparator && pushStateUrlSplit.indexOf('#') === 0) {
-                        if (view.initialPagesUrl.indexOf(pushStateUrlSplit)) {
-                            app.router.load(view, {pageName: pushStateUrlSplit.replace('#', ''), animatePages: pushStateAnimatePages, pushState: false});
+                        const pageName = pushStateUrlSplit.split('?')[0].replace('#', '');
+                        if (view.initialPagesUrl.indexOf('#' + pageName) >= 0) {
+                            history.replaceState({
+                              pageName: view.initialPagesUrl[0].replace('#', ''),
+                              viewIndex: app.views.indexOf(view) },
+                              '', app.params.pushStateSeparator + view.initialPagesUrl[0]);
+                            if (!view.main) {
+                              app.showTab('#' + view.url, false);
+                            }
+                            app.router.load(view, {url: pushStateUrlSplit, pageName: pageName, animatePages: pushStateAnimatePages, pushState: true});
                         }
                     }
                 }
@@ -1831,7 +1839,7 @@
             }
         
             // Push State
-            if (app.params.pushState && !options.reloadPrevious && view.main)  {
+            if (app.params.pushState && !options.reloadPrevious)  {
                 if (typeof pushState === 'undefined') pushState = true;
                 var pushStateRoot = app.params.pushStateRoot || '';
                 var method = options.reload ? 'replaceState' : 'pushState';
@@ -1971,7 +1979,7 @@
                     query: options.query,
                     fromPage: oldPage && oldPage.length && oldPage[0].f7PageData
                 });
-                if (app.params.pushState && view.main) app.pushStateClearQueue();
+                if (app.params.pushState) app.pushStateClearQueue();
                 if (!(view.params.swipeBackPage || view.params.preloadPreviousPage)) {
                     if (view.params.domCache) {
                         oldPage.addClass('cached');
@@ -2308,7 +2316,7 @@
                 animateBack();
         
                 // Push state
-                if (app.params.pushState && view.main)  {
+                if (app.params.pushState)  {
                     if (typeof pushState === 'undefined') pushState = true;
                     if (!preloadOnly && history.state && pushState) {
                         history.back();
@@ -2565,7 +2573,7 @@
                 delete view.contentCache[previousURL];
             }
         
-            if (app.params.pushState && view.main) app.pushStateClearQueue();
+            if (app.params.pushState) app.pushStateClearQueue();
         
             // Preload previous page
             if (view.params.preloadPreviousPage) {
@@ -2879,7 +2887,7 @@
                         if (url.indexOf('#') === 0 && url !== '#')  {
                             if (view.params.domCache) {
                                 pageName = url.split('#')[1];
-                                url = undefined;
+                                if (clicked.hasClass('back')) url = undefined;
                             }
                             else return;
                         }
