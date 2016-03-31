@@ -571,7 +571,7 @@ var View = function (selector, params) {
                 app.router.load(view, {pageName: historyState.pageName, url: historyState.url, animatePages: pushStateAnimatePages, pushState: false});
             }
             else if (pushStateSeparator && pushStateUrlSplit.indexOf('#') === 0) {
-                const pageName = pushStateUrlSplit.split('?')[0].replace('#', '');
+                var pageName = pushStateUrlSplit.split('?')[0].replace('#', '');
                 if (view.initialPagesUrl.indexOf('#' + pageName) >= 0) {
                     history.replaceState({
                       pageName: view.initialPagesUrl[0].replace('#', ''),
