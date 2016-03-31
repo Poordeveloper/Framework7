@@ -571,8 +571,16 @@ var View = function (selector, params) {
                 app.router.load(view, {pageName: historyState.pageName, url: historyState.url, animatePages: pushStateAnimatePages, pushState: false});
             }
             else if (pushStateSeparator && pushStateUrlSplit.indexOf('#') === 0) {
-                if (view.initialPagesUrl.indexOf(pushStateUrlSplit)) {
-                    app.router.load(view, {pageName: pushStateUrlSplit.replace('#', ''), animatePages: pushStateAnimatePages, pushState: false});
+                const pageName = pushStateUrlSplit.split('?')[0].replace('#', '');
+                if (view.initialPagesUrl.indexOf('#' + pageName) >= 0) {
+                    history.replaceState({
+                      pageName: view.initialPagesUrl[0].replace('#', ''),
+                      viewIndex: app.views.indexOf(view) },
+                      '', app.params.pushStateSeparator + view.initialPagesUrl[0]);
+                    if (!view.main) {
+                      app.showTab('#' + view.url, false);
+                    }
+                    app.router.load(view, {url: pushStateUrlSplit, pageName: pageName, animatePages: pushStateAnimatePages, pushState: true});
                 }
             }
         }
