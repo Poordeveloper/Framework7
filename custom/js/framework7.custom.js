@@ -13,7 +13,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: March 31, 2016
+ * Released on: April 1, 2016
  */
 (function () {
 
@@ -733,7 +733,10 @@
             // Push State on load
             if (app.params.pushState && app.params.pushStateOnLoad) {
                 var pushStateUrl;
-                var pushStateUrlSplit = docLocation.split(pushStateSeparator)[1];
+                var pushStateUrlSplit = docLocation.split(pushStateSeparator || '#')[1];
+                if (pushStateUrlSplit && pushStateUrlSplit[0] != '#') {
+                  pushStateUrlSplit = '#' + pushStateUrlSplit;
+                }
                 if (pushStateRoot) {
                     pushStateUrl = docLocation.split(app.params.pushStateRoot + pushStateSeparator)[1];
                 }
@@ -755,7 +758,7 @@
                     if (historyState && historyState.pageName && 'viewIndex' in historyState) {
                         app.router.load(view, {pageName: historyState.pageName, url: historyState.url, animatePages: pushStateAnimatePages, pushState: false});
                     }
-                    else if (pushStateSeparator && pushStateUrlSplit.indexOf('#') === 0) {
+                    else if (pushStateUrlSplit) {
                         var pageName = pushStateUrlSplit.split('?')[0].replace('#', '');
                         if (view.initialPagesUrl.indexOf('#' + pageName) >= 0) {
                             history.replaceState({
