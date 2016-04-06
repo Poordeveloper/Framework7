@@ -1,6 +1,6 @@
 {
   "name": "framework7",
-  "version": "1.4.2-5",
+  "version": "1.4.2-6",
   "description": "Full Featured Mobile HTML Framework For Building iOS & Android Apps",
   "main": "dist/js/framework7.js",
   "repository": {
@@ -59,6 +59,6 @@
   },
   "scripts": {
     "test": "gulp test",
-    "custom": "gulp custom -searchbar,messages,modals,smart-select,virtual-list,infinite-scroll,scroll-toolbars,tabs,fast-clicks,push-state"
+    "custom": "gulp custom -searchbar,messages,modals,smart-select,virtual-list,infinite-scroll,scroll-toolbars,tabs,fast-clicks,push-state,swipeout"
   }
 }
