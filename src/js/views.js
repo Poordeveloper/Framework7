@@ -576,10 +576,15 @@ var View = function (selector, params) {
             else if (pushStateUrlSplit) {
                 var pageName = pushStateUrlSplit.split('?')[0].replace('#', '');
                 if (view.initialPagesUrl.indexOf('#' + pageName) >= 0) {
+                    if (pushStateUrlSplit.indexOf(view.initialPagesUrl[0]) !== 0) { // not initial page
                     history.replaceState({
                       pageName: view.initialPagesUrl[0].replace('#', ''),
                       viewIndex: app.views.indexOf(view) },
                       '', app.params.pushStateSeparator + view.initialPagesUrl[0]);
+                    } else if (view.activePage) {
+                      var query = $.parseUrlQuery(pushStateUrlSplit);
+                      view.activePage.query = query;
+                    }
                     if (!view.main) {
                       app.showTab('#' + view.url, false);
                     }
