@@ -1,6 +1,6 @@
 {
   "name": "framework7",
-  "version": "1.4.2-6",
+  "version": "1.4.2-7",
   "description": "Full Featured Mobile HTML Framework For Building iOS & Android Apps",
   "main": "dist/js/framework7.js",
   "repository": {
