@@ -230,6 +230,8 @@ app.router = {
 app.router._load = function (view, options) {
     options = options || {};
 
+    var fullUrl = options.url;
+    options.url = undefined;
     var url = options.url,
         content = options.content, //initial content
         t7_rendered = {content: options.content},
@@ -385,18 +387,19 @@ app.router._load = function (view, options) {
 
     // Push State
     if (app.params.pushState && !options.reloadPrevious)  {
+        if (!fullUrl) fullUrl = url;
         if (typeof pushState === 'undefined') pushState = true;
         var pushStateRoot = app.params.pushStateRoot || '';
         var method = options.reload ? 'replaceState' : 'pushState';
         if (pushState) {
             if (!isDynamicPage && !pageName) {
-                history[method]({url: url, viewIndex: app.views.indexOf(view)}, '', pushStateRoot + app.params.pushStateSeparator + url);
+                history[method]({url: url, viewIndex: app.views.indexOf(view)}, '', pushStateRoot + app.params.pushStateSeparator + fullUrl);
             }
             else if (isDynamicPage && content) {
-                history[method]({content: typeof content === 'string' ? content : '', url: url, viewIndex: app.views.indexOf(view)}, '', pushStateRoot + app.params.pushStateSeparator + url);
+                history[method]({content: typeof content === 'string' ? content : '', url: url, viewIndex: app.views.indexOf(view)}, '', pushStateRoot + app.params.pushStateSeparator + fullUrl);
             }
             else if (pageName) {
-                history[method]({pageName: pageName, url: url, viewIndex: app.views.indexOf(view)}, '', pushStateRoot + app.params.pushStateSeparator + url);
+                history[method]({pageName: pageName, url: url, viewIndex: app.views.indexOf(view)}, '', pushStateRoot + app.params.pushStateSeparator + fullUrl);
             }
         }
     }
