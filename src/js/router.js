@@ -231,6 +231,10 @@ app.router._load = function (view, options) {
 
     var fullUrl = options.url;
     options.url = undefined;
+    if (!options.query && fullUrl && fullUrl.indexOf('?') > 0) {
+      options.query = $.parseUrlQuery(fullUrl);
+    }
+
     var url = options.url,
         content = options.content, //initial content
         t7_rendered = {content: options.content},

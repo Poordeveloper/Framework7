@@ -13,7 +13,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: April 17, 2016
+ * Released on: April 25, 2016
  */
 (function () {
 
@@ -1694,6 +1694,10 @@
         
             var fullUrl = options.url;
             options.url = undefined;
+            if (!options.query && fullUrl && fullUrl.indexOf('?') > 0) {
+              options.query = $.parseUrlQuery(fullUrl);
+            }
+        
             var url = options.url,
                 content = options.content, //initial content
                 t7_rendered = {content: options.content},
