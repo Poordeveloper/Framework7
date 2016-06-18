@@ -398,7 +398,8 @@ var View = function (selector, params) {
             container.trigger('swipeBackBeforeReset', callbackData);
         }
 
-        activePage.transitionEnd(function () {
+        var callback = function () {
+            if (view.allowPageChange) return;
             $([activePage[0], previousPage[0]]).removeClass('page-transitioning');
             if (dynamicNavbar) {
                 activeNavElements.removeClass('page-transitioning').css({opacity: ''});
@@ -427,7 +428,9 @@ var View = function (selector, params) {
                 container.trigger('swipeBackAfterReset', callbackData);
             }
             if (pageShadow && pageShadow.length > 0) pageShadow.remove();
-        });
+        };
+      activePage.transitionEnd(callback);
+      setTimeout(callback, 500); // transitionEnd not called sometimes in weixin, so add timeout for sure
     };
     view.attachEvents = function (detach) {
         var action = detach ? 'off' : 'on';
