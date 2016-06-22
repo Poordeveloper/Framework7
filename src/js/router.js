@@ -551,6 +551,7 @@ app.router._load = function (view, options) {
         }
     }
     if (animatePages) {
+        var animating = true;
         // Set pages before animation
         if (app.params.material && app.params.materialPageLoadDelay) {
             setTimeout(function () {
@@ -567,9 +568,14 @@ app.router._load = function (view, options) {
                 app.router.animateNavbars(oldNavbarInner, newNavbarInner, 'to-left', view);
             }, 0);
         }
-        newPage.animationEnd(function (e) {
+        var callback = function (e) {
+          if (animating) {
             afterAnimation();
-        });
+            animating = false;
+          }
+        }
+        newPage.animationEnd(callback);
+        setTimeout(callback, 500); // animationEnd not called sometimes in weixin, so add timeout for sure
     }
     else {
         if (dynamicNavbar) newNavbarInner.find('.sliding, .sliding .back .icon').transform('');
@@ -700,6 +706,7 @@ app.router._back = function (view, options) {
         });
 
         if (animatePages) {
+            var animating = true;
             // Set pages before animation
             app.router.animatePages(newPage, oldPage, 'to-right', view);
 
@@ -710,9 +717,14 @@ app.router._back = function (view, options) {
                 }, 0);
             }
 
-            newPage.animationEnd(function () {
+            var callback = function () {
+              if (animating) {
                 afterAnimation();
-            });
+                animating = false;
+              }
+            }
+            newPage.animationEnd(callback);
+            setTimeout(callback, 500); // animationEnd not called sometimes in weixin, so add timeout for sure
         }
         else {
             if (dynamicNavbar) newNavbarInner.find('.sliding, .sliding .back .icon').transform('');

@@ -13,7 +13,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: June 19, 2016
+ * Released on: June 23, 2016
  */
 (function () {
 
@@ -2017,6 +2017,7 @@
                 }
             }
             if (animatePages) {
+                var animating = true;
                 // Set pages before animation
                 if (app.params.material && app.params.materialPageLoadDelay) {
                     setTimeout(function () {
@@ -2033,9 +2034,14 @@
                         app.router.animateNavbars(oldNavbarInner, newNavbarInner, 'to-left', view);
                     }, 0);
                 }
-                newPage.animationEnd(function (e) {
+                var callback = function (e) {
+                  if (animating) {
                     afterAnimation();
-                });
+                    animating = false;
+                  }
+                }
+                newPage.animationEnd(callback);
+                setTimeout(callback, 500); // animationEnd not called sometimes in weixin, so add timeout for sure
             }
             else {
                 if (dynamicNavbar) newNavbarInner.find('.sliding, .sliding .back .icon').transform('');
@@ -2166,6 +2172,7 @@
                 });
         
                 if (animatePages) {
+                    var animating = true;
                     // Set pages before animation
                     app.router.animatePages(newPage, oldPage, 'to-right', view);
         
@@ -2176,9 +2183,14 @@
                         }, 0);
                     }
         
-                    newPage.animationEnd(function () {
+                    var callback = function () {
+                      if (animating) {
                         afterAnimation();
-                    });
+                        animating = false;
+                      }
+                    }
+                    newPage.animationEnd(callback);
+                    setTimeout(callback, 500); // animationEnd not called sometimes in weixin, so add timeout for sure
                 }
                 else {
                     if (dynamicNavbar) newNavbarInner.find('.sliding, .sliding .back .icon').transform('');
