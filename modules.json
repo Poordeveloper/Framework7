@@ -202,9 +202,9 @@
         "dependencies" : []
     },
     "swiper": {
-        "js" : ["src/js/swiper.js", "src/js/swiper-init.js"],
+        "js" : ["src/js/swiper2.js", "src/js/swiper-init.js"],
         "less": {
-            "ios": ["src/less/ios/swiper.less"],
+            "ios": ["src/less/ios/swiper2.less"],
             "material": ["src/less/material/swiper.less"]
         },
         "dependencies" : []

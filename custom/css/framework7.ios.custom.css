@@ -5,7 +5,7 @@
  * iOS Theme
  *
  * 
- * Included modules: searchbar,messages,modals,smart-select,virtual-list,infinite-scroll,scroll-toolbars,tabs,fast-clicks,push-state,swipeout
+ * Included modules: searchbar,messages,modals,smart-select,virtual-list,infinite-scroll,scroll-toolbars,tabs,fast-clicks,push-state,swipeout,swiper
  * 
  * http://www.idangero.us/framework7
  * 
@@ -4549,6 +4549,37 @@ html.pixel-ratio-3 .picker-modal.smart-select-picker .toolbar:after {
 }
 .tabs-swipeable-wrap > .tabs > .tab {
   display: block;
+}
+/* === Swiper === */
+.swiper-container {
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  /* Fix of Webkit flickering */
+  z-index: 1;
+}
+.swiper-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-transition-property: -webkit-transform;
+  -ms-transition-property: -ms-transform;
+  transition-property: transform;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+}
+.swiper-slide {
+  -webkit-flex-shrink: 0;
+  -ms-flex: 0 0 auto;
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 /* === Disabled elements === */
 .disabled,
