@@ -9,9 +9,6 @@ window.Swiper = function (container, params) {
         autoplay: false,
         autoplayDisableOnInteraction: true,
         autoplayStopOnLast: false,
-        // To support iOS's swipe-to-go-back gesture (when being used in-app, with UIWebView).
-        iOSEdgeSwipeDetection: false,
-        iOSEdgeSwipeThreshold: 20,
         // Set wrapper width
         setWrapperSize: false,
         // Virtual Translate
@@ -38,7 +35,6 @@ window.Swiper = function (container, params) {
         longSwipesRatio: 0.5,
         longSwipesMs: 300,
         followFinger: true,
-        onlyExternal: false,
         threshold: 0,
         touchMoveStopPropagation: true,
         // Unique Navigation Elements
@@ -46,7 +42,7 @@ window.Swiper = function (container, params) {
         // Pagination
         pagination: null,
         paginationElement: 'span',
-        paginationClickable: false,
+        paginationClickable: true,
         paginationHide: false,
         paginationBulletRender: null,
         paginationProgressRender: null,
@@ -56,9 +52,6 @@ window.Swiper = function (container, params) {
         // Resistance
         resistance: true,
         resistanceRatio: 0.85,
-        // Next/prev buttons
-        nextButton: null,
-        prevButton: null,
         // Progress
         watchSlidesVisibility: false,
         // Cursor
@@ -197,21 +190,6 @@ window.Swiper = function (container, params) {
             s.params.paginationClickable = false;
         }
         s.paginationContainer.addClass('swiper-pagination-' + s.params.paginationType);
-    }
-    // Next/Prev Buttons
-    if (s.params.nextButton || s.params.prevButton) {
-        if (s.params.nextButton) {
-            s.nextButton = $(s.params.nextButton);
-            if (s.params.uniqueNavElements && typeof s.params.nextButton === 'string' && s.nextButton.length > 1 && s.container.find(s.params.nextButton).length === 1) {
-                s.nextButton = s.container.find(s.params.nextButton);
-            }
-        }
-        if (s.params.prevButton) {
-            s.prevButton = $(s.params.prevButton);
-            if (s.params.uniqueNavElements && typeof s.params.prevButton === 'string' && s.prevButton.length > 1 && s.container.find(s.params.prevButton).length === 1) {
-                s.prevButton = s.container.find(s.params.prevButton);
-            }
-        }
     }
     
     // Is Horizontal
@@ -616,7 +594,6 @@ window.Swiper = function (container, params) {
                     current = current - (s.slides.length - s.loopedSlides * 2);
                 }
                 if (current > total - 1) current = current - total;
-                if (current < 0 && s.params.paginationType !== 'bullets') current = total + current;
             }
             else {
                 if (typeof s.snapIndex !== 'undefined') {
@@ -636,44 +613,6 @@ window.Swiper = function (container, params) {
                 }
                 else {
                     s.bullets.eq(current).addClass(s.params.bulletActiveClass);
-                }
-            }
-            if (s.params.paginationType === 'fraction') {
-                s.paginationContainer.find('.' + s.params.paginationCurrentClass).text(current + 1);
-                s.paginationContainer.find('.' + s.params.paginationTotalClass).text(total);
-            }
-            if (s.params.paginationType === 'progress') {
-                var scale = (current + 1) / total,
-                    scaleX = scale,
-                    scaleY = 1;
-                if (!s.isHorizontal()) {
-                    scaleY = scale;
-                    scaleX = 1;
-                }
-                s.paginationContainer.find('.' + s.params.paginationProgressbarClass).transform('translate3d(0,0,0) scaleX(' + scaleX + ') scaleY(' + scaleY + ')').transition(s.params.speed);
-            }
-            if (s.params.paginationType === 'custom' && s.params.paginationCustomRender) {
-                s.paginationContainer.html(s.params.paginationCustomRender(s, current + 1, total));
-                s.emit('onPaginationRendered', s, s.paginationContainer[0]);
-            }
-        }
-    
-        // Next/active buttons
-        if (!s.params.loop) {
-            if (s.params.prevButton && s.prevButton && s.prevButton.length > 0) {
-                if (s.isBeginning) {
-                    s.prevButton.addClass(s.params.buttonDisabledClass);
-                }
-                else {
-                    s.prevButton.removeClass(s.params.buttonDisabledClass);
-                }
-            }
-            if (s.params.nextButton && s.nextButton && s.nextButton.length > 0) {
-                if (s.isEnd) {
-                    s.nextButton.addClass(s.params.buttonDisabledClass);
-                }
-                else {
-                    s.nextButton.removeClass(s.params.buttonDisabledClass);
                 }
             }
         }
@@ -698,27 +637,6 @@ window.Swiper = function (container, params) {
                 }
                 s.paginationContainer.html(paginationHTML);
                 s.bullets = s.paginationContainer.find('.' + s.params.bulletClass);
-            }
-            if (s.params.paginationType === 'fraction') {
-                if (s.params.paginationFractionRender) {
-                    paginationHTML = s.params.paginationFractionRender(s, s.params.paginationCurrentClass, s.params.paginationTotalClass);
-                }
-                else {
-                    paginationHTML =
-                        '<span class="' + s.params.paginationCurrentClass + '"></span>' +
-                        ' / ' +
-                        '<span class="' + s.params.paginationTotalClass+'"></span>';
-                }
-                s.paginationContainer.html(paginationHTML);
-            }
-            if (s.params.paginationType === 'progress') {
-                if (s.params.paginationProgressRender) {
-                    paginationHTML = s.params.paginationProgressRender(s, s.params.paginationProgressbarClass);
-                }
-                else {
-                    paginationHTML = '<span class="' + s.params.paginationProgressbarClass + '"></span>';
-                }
-                s.paginationContainer.html(paginationHTML);
             }
             if (s.params.paginationType !== 'custom') {
                 s.emit('onPaginationRendered', s, s.paginationContainer[0]);
@@ -831,13 +749,6 @@ window.Swiper = function (container, params) {
         }
         window[action]('resize', s.onResize);
     
-        // Next, Prev, Index
-        if (s.params.nextButton && s.nextButton && s.nextButton.length > 0) {
-            s.nextButton[actionDom]('click', s.onClickNext);
-        }
-        if (s.params.prevButton && s.prevButton && s.prevButton.length > 0) {
-            s.prevButton[actionDom]('click', s.onClickPrev);
-        }
         if (s.params.pagination && s.params.paginationClickable) {
             s.paginationContainer[actionDom]('click', '.' + s.params.bulletClass, s.onClickIndex);
         }
@@ -1008,11 +919,6 @@ window.Swiper = function (container, params) {
         var startX = s.touches.currentX = e.type === 'touchstart' ? e.targetTouches[0].pageX : e.pageX;
         var startY = s.touches.currentY = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
     
-        // Do NOT start if iOS edge swipe is detected. Otherwise iOS app (UIWebView) cannot swipe-to-go-back anymore
-        if(s.device.ios && s.params.iOSEdgeSwipeDetection && startX <= s.params.iOSEdgeSwipeThreshold) {
-            return;
-        }
-    
         isTouched = true;
         isMoved = false;
         allowTouchCallbacks = true;
@@ -1041,21 +947,6 @@ window.Swiper = function (container, params) {
     s.onTouchMove = function (e) {
         if (e.originalEvent) e = e.originalEvent;
         if (isTouchEvent && e.type === 'mousemove') return;
-        if (e.preventedByNestedSwiper) {
-            s.touches.startX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
-            s.touches.startY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
-            return;
-        }
-        if (s.params.onlyExternal) {
-            // isMoved = true;
-            s.allowClick = false;
-            if (isTouched) {
-                s.touches.startX = s.touches.currentX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
-                s.touches.startY = s.touches.currentY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
-                touchStartTime = Date.now();
-            }
-            return;
-        }
         if (isTouchEvent && document.activeElement) {
             if (e.target === document.activeElement && $(e.target).is(formElements)) {
                 isMoved = true;
@@ -1093,6 +984,8 @@ window.Swiper = function (container, params) {
         }
         s.allowClick = false;
         s.emit('onSliderMove', s, e);
+        // make swipe-to-go-back guesture works in first slide
+        if (s.activeIndex === 0 && s.touches.currentX > s.touches.startX) return;
         e.preventDefault();
         if (s.params.touchMoveStopPropagation && !s.params.nested) {
             e.stopPropagation();
@@ -1133,20 +1026,6 @@ window.Swiper = function (container, params) {
     
         s.swipeDirection = diff > 0 ? 'prev' : 'next';
         currentTranslate = diff + startTranslate;
-    
-        var disableParentSwiper = true;
-        if ((diff > 0 && currentTranslate > s.minTranslate())) {
-            disableParentSwiper = false;
-            if (s.params.resistance) currentTranslate = s.minTranslate() - 1 + Math.pow(-s.minTranslate() + startTranslate + diff, s.params.resistanceRatio);
-        }
-        else if (diff < 0 && currentTranslate < s.maxTranslate()) {
-            disableParentSwiper = false;
-            if (s.params.resistance) currentTranslate = s.maxTranslate() + 1 - Math.pow(s.maxTranslate() - startTranslate - diff, s.params.resistanceRatio);
-        }
-    
-        if (disableParentSwiper) {
-            e.preventedByNestedSwiper = true;
-        }
     
         // Directions locks
         if (!s.params.allowSwipeToNext && s.swipeDirection === 'next' && currentTranslate < startTranslate) {
@@ -1658,12 +1537,6 @@ window.Swiper = function (container, params) {
         s.updateContainerSize();
         s.updateSlidesSize();
         s.updatePagination();
-        if (s.params.scrollbar && s.scrollbar) {
-            s.scrollbar.set();
-            if (s.params.scrollbarDraggable) {
-                s.scrollbar.enableDraggable();
-            }
-        }
         if (s.params.loop) {
             s.slideTo(s.params.initialSlide + s.loopedSlides, 0, s.params.runCallbacksOnInit);
         }
@@ -1709,16 +1582,6 @@ window.Swiper = function (container, params) {
         if (s.bullets && s.bullets.length) {
             s.bullets.removeClass(s.params.bulletActiveClass);
         }
-    
-        // Buttons
-        if (s.params.prevButton) $(s.params.prevButton).removeClass(s.params.buttonDisabledClass);
-        if (s.params.nextButton) $(s.params.nextButton).removeClass(s.params.buttonDisabledClass);
-    
-        // Scrollbar
-        if (s.params.scrollbar && s.scrollbar) {
-            if (s.scrollbar.track && s.scrollbar.track.length) s.scrollbar.track.removeAttr('style');
-            if (s.scrollbar.drag && s.scrollbar.drag.length) s.scrollbar.drag.removeAttr('style');
-        }
     };
     
     // Destroy
@@ -1727,12 +1590,6 @@ window.Swiper = function (container, params) {
         s.detachEvents();
         // Stop autoplay
         s.stopAutoplay();
-        // Disable draggable
-        if (s.params.scrollbar && s.scrollbar) {
-            if (s.params.scrollbarDraggable) {
-                s.scrollbar.disableDraggable();
-            }
-        }
         // Destroy loop
         if (s.params.loop) {
             s.destroyLoop();
