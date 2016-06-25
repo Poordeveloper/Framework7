@@ -7793,17 +7793,6 @@
                     }
                 }
             };
-            // Clicks
-            s.onClickNext = function (e) {
-                e.preventDefault();
-                if (s.isEnd && !s.params.loop) return;
-                s.slideNext();
-            };
-            s.onClickPrev = function (e) {
-                e.preventDefault();
-                if (s.isBeginning && !s.params.loop) return;
-                s.slidePrev();
-            };
             s.onClickIndex = function (e) {
                 e.preventDefault();
                 var index = $(this).index() * s.params.slidesPerGroup;
