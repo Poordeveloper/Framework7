@@ -13,7 +13,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: June 23, 2016
+ * Released on: June 25, 2016
  */
 (function () {
 
@@ -50,6 +50,7 @@
             fastClicks: true,
             fastClicksDistanceThreshold: 10,
             fastClicksDelayBetweenClicks: 50,
+            fastClicksExclude: '', // CSS selector
             // Tap Hold
             tapHold: false,
             tapHoldDelay: 750,
@@ -1607,7 +1608,8 @@
                     next(content);
                 }
             },
-            preroute: function(view, options) {
+            preroute: function(view, options, isBack) {
+                if (isBack) options.isBack = true;
                 app.pluginHook('routerPreroute', view, options);
                 if ((app.params.preroute && app.params.preroute(view, options) === false) || (view && view.params.preroute && view.params.preroute(view, options) === false)) {
                     return true;
@@ -1714,7 +1716,6 @@
                 pushState = options.pushState;
         
             if (typeof animatePages === 'undefined') animatePages = view.params.animatePages;
-        
             // Plugin hook
             app.pluginHook('routerLoad', view, options);
         
@@ -1761,7 +1762,7 @@
             newPage.addClass(options.reload ? 'page-on-' + reloadPosition : 'page-on-right');
         
             // Find old page (should be the last one) and remove older pages
-            pagesInView = pagesContainer.children('.page:not(.cached)');
+            pagesInView = pagesContainer.find('.page:not(.cached)');
         
             if (options.reload && options.reloadPrevious && pagesInView.length === 1)  {
                 view.allowPageChange = true;
@@ -1790,7 +1791,7 @@
                         $(pagesInView[i]).addClass('cached');
                     }
                 }
-                oldPage = pagesContainer.children('.page:not(.cached)');
+                oldPage = pagesContainer.find('.page:not(.cached)');
             }
             if(view.params.domCache) newPage.removeClass('cached');
         
@@ -2051,10 +2052,10 @@
         };
         
         app.router.load = function (view, options) {
+            options = options || {};
             if (app.router.preroute(view, options)) {
                 return false;
             }
-            options = options || {};
             var url = options.url;
             var content = options.content;
             var pageName = options.pageName;
@@ -2117,7 +2118,7 @@
         
             var viewContainer = $(view.container),
                 pagesContainer = $(view.pagesContainer),
-                pagesInView = pagesContainer.children('.page:not(.cached)'),
+                pagesInView = pagesContainer.find('.page:not(.cached)'),
                 oldPage, newPage, oldNavbarInner, newNavbarInner, navbar, navbarInners, dynamicNavbar, manipulateDom = true;
         
             if (typeof animatePages === 'undefined') animatePages = view.params.animatePages;
@@ -2267,7 +2268,7 @@
                             navbarToRemove.remove();
                         }
                     }
-                    pagesInView = pagesContainer.children('.page:not(.cached)');
+                    pagesInView = pagesContainer.find('.page:not(.cached)');
                     if (dynamicNavbar) {
                         navbarInners = viewContainer.find('.navbar-inner:not(.cached)');
                     }
@@ -2287,7 +2288,7 @@
                 oldPage = $(pagesInView[pagesInView.length - 1]);
                 if (view.params.domCache) {
                     if (oldPage[0] === newPage[0]) {
-                        oldPage = pagesContainer.children('.page.page-on-center');
+                        oldPage = pagesContainer.find('.page.page-on-center');
                         if (oldPage.length === 0 && view.activePage) oldPage = $(view.activePage.container);
                     }
                 }
@@ -2296,10 +2297,10 @@
                     oldNavbarInner = $(navbarInners[navbarInners.length - 1]);
                     if (view.params.domCache) {
                         if (oldNavbarInner[0] === newNavbarInner[0]) {
-                            oldNavbarInner = navbar.children('.navbar-inner.navbar-on-center:not(.cached)');
+                            oldNavbarInner = navbar.find('.navbar-inner.navbar-on-center:not(.cached)');
                         }
                         if (oldNavbarInner.length === 0) {
-                            oldNavbarInner = navbar.children('.navbar-inner[data-page="'+oldPage.attr('data-page')+'"]');
+                            oldNavbarInner = navbar.find('.navbar-inner[data-page="'+oldPage.attr('data-page')+'"]');
                         }
                     }
                     if (oldNavbarInner.length === 0 || newNavbarInner[0] === oldNavbarInner[0]) dynamicNavbar = false;
@@ -2456,10 +2457,10 @@
         
         };
         app.router.back = function (view, options) {
-            if (app.router.preroute(view, options)) {
+            options = options || {};
+            if (app.router.preroute(view, options, true)) {
                 return false;
             }
-            options = options || {};
             var url = options.url;
             var content = options.content;
             var pageName = options.pageName;
@@ -6026,6 +6027,7 @@
                 var $el = $(el);
                 if (el.nodeName.toLowerCase() === 'input' && el.type === 'file') return false;
                 if ($el.hasClass('no-fastclick') || $el.parents('.no-fastclick').length > 0) return false;
+                if (app.params.fastClicksExclude && $el.is(app.params.fastClicksExclude)) return false;
                 return true;
             }
             function targetNeedsFocus(el) {
@@ -7844,6 +7846,9 @@
                 }
                 return new Dom7(prevEls);
             },
+            siblings: function (selector) {
+                return this.nextAll(selector).add(this.prevAll(selector));
+            },
             parent: function (selector) {
                 var parents = [];
                 for (var i = 0; i < this.length; i++) {
@@ -7930,6 +7935,18 @@
                     }
                 }
                 return dom;
+            },
+            empty: function () {
+                for (var i = 0; i < this.length; i++) {
+                    var el = this[i];
+                    if (el.nodeType === 1) {
+                        for (var j = 0; j < el.childNodes.length; j++) {
+                            if (el.childNodes[j].parentNode) el.childNodes[j].parentNode.removeChild(el.childNodes[j]);
+                        }
+                        el.textContent = '';
+                    }
+                }
+                return this;
             }
         };
         
@@ -8510,12 +8527,13 @@
         (function () {
             var methods = ('get post getJSON').split(' ');
             function createMethod(method) {
-                $[method] = function (url, data, success) {
+                $[method] = function (url, data, success, error) {
                     return $.ajax({
                         url: url,
                         method: method === 'post' ? 'POST' : 'GET',
                         data: typeof data === 'function' ? undefined : data,
                         success: typeof data === 'function' ? data : success,
+                        error: typeof data === 'function' ? success : error,
                         dataType: method === 'getJSON' ? 'json' : undefined
                     });
                 };
