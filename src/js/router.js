@@ -259,6 +259,10 @@ app.router._load = function (view, options) {
             content = t7_rendered.content;
         }
     }
+  
+    // hack for bug of right black screen on weixin browser.
+    // maybe useless, but for safety, still try to remove page-from-left-to-center
+    pagesContainer.find('.page.page-from-left-to-center').removeClass('page-from-left-to-center');
 
     app.router.temporaryDom.innerHTML = '';
 
@@ -1088,8 +1092,9 @@ app.router.afterBack = function (view, oldPage, newPage) {
         app.pageRemoveCallback(view, oldPage[0], 'right');
         oldPage.remove();
     }
-
-    newPage.removeClass('page-from-left-to-center page-on-left').addClass('page-on-center');
+    // to remove page-from-left-to-center here causes right black screen on
+    // weixin browser, so we move it to _load
+    newPage.removeClass('page-on-left').addClass('page-on-center');
     view.allowPageChange = true;
 
     // Update View's History
