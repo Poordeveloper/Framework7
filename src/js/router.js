@@ -575,7 +575,7 @@ app.router._load = function (view, options) {
           }
         }
         newPage.animationEnd(callback);
-        setTimeout(callback, 500); // animationEnd not called sometimes in weixin, so add timeout for sure
+        setTimeout(callback, 400); // animationEnd not called sometimes in weixin, so add timeout for sure
     }
     else {
         if (dynamicNavbar) newNavbarInner.find('.sliding, .sliding .back .icon').transform('');
@@ -724,7 +724,7 @@ app.router._back = function (view, options) {
               }
             }
             newPage.animationEnd(callback);
-            setTimeout(callback, 500); // animationEnd not called sometimes in weixin, so add timeout for sure
+            setTimeout(callback, 400); // animationEnd not called sometimes in weixin, so add timeout for sure
         }
         else {
             if (dynamicNavbar) newNavbarInner.find('.sliding, .sliding .back .icon').transform('');

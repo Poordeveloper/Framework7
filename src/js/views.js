@@ -430,7 +430,7 @@ var View = function (selector, params) {
             if (pageShadow && pageShadow.length > 0) pageShadow.remove();
         };
       activePage.transitionEnd(callback);
-      setTimeout(callback, 500); // transitionEnd not called sometimes in weixin, so add timeout for sure
+      setTimeout(callback, 400); // transitionEnd not called sometimes in weixin, so add timeout for sure
     };
     view.attachEvents = function (detach) {
         var action = detach ? 'off' : 'on';

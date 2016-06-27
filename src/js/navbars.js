@@ -201,6 +201,9 @@ app.showNavbar = function (navbarContainer) {
     navbar.addClass('navbar-hiding').removeClass('navbar-hidden').transitionEnd(function () {
         navbar.removeClass('navbar-hiding');
     });
+    setTimeout(function() {
+      navbar.removeClass('navbar-hiding');
+    }, 400); // in case transitionEnd not called on some browser like weixin
     return true;
 };
 app.hideToolbar = function (toolbarContainer) {
@@ -212,4 +215,7 @@ app.showToolbar = function (toolbarContainer) {
     toolbar.addClass('toolbar-hiding').removeClass('toolbar-hidden').transitionEnd(function () {
         toolbar.removeClass('toolbar-hiding');
     });
+    setTimeout(function() {
+      toolbar.removeClass('toolbar-hiding');
+    }, 400); // in case transitionEnd not called on some browser like weixin
 };

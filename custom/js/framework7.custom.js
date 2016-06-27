@@ -13,7 +13,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: June 25, 2016
+ * Released on: June 27, 2016
  */
 (function () {
 
@@ -616,7 +616,7 @@
                     if (pageShadow && pageShadow.length > 0) pageShadow.remove();
                 };
               activePage.transitionEnd(callback);
-              setTimeout(callback, 500); // transitionEnd not called sometimes in weixin, so add timeout for sure
+              setTimeout(callback, 400); // transitionEnd not called sometimes in weixin, so add timeout for sure
             };
             view.attachEvents = function (detach) {
                 var action = detach ? 'off' : 'on';
@@ -1040,6 +1040,9 @@
             navbar.addClass('navbar-hiding').removeClass('navbar-hidden').transitionEnd(function () {
                 navbar.removeClass('navbar-hiding');
             });
+            setTimeout(function() {
+              navbar.removeClass('navbar-hiding');
+            }, 400); // in case transitionEnd not called on some browser like weixin
             return true;
         };
         app.hideToolbar = function (toolbarContainer) {
@@ -1051,6 +1054,9 @@
             toolbar.addClass('toolbar-hiding').removeClass('toolbar-hidden').transitionEnd(function () {
                 toolbar.removeClass('toolbar-hiding');
             });
+            setTimeout(function() {
+              toolbar.removeClass('toolbar-hiding');
+            }, 400); // in case transitionEnd not called on some browser like weixin
         };
         
 
@@ -2042,7 +2048,7 @@
                   }
                 }
                 newPage.animationEnd(callback);
-                setTimeout(callback, 500); // animationEnd not called sometimes in weixin, so add timeout for sure
+                setTimeout(callback, 400); // animationEnd not called sometimes in weixin, so add timeout for sure
             }
             else {
                 if (dynamicNavbar) newNavbarInner.find('.sliding, .sliding .back .icon').transform('');
@@ -2191,7 +2197,7 @@
                       }
                     }
                     newPage.animationEnd(callback);
-                    setTimeout(callback, 500); // animationEnd not called sometimes in weixin, so add timeout for sure
+                    setTimeout(callback, 400); // animationEnd not called sometimes in weixin, so add timeout for sure
                 }
                 else {
                     if (dynamicNavbar) newNavbarInner.find('.sliding, .sliding .back .icon').transform('');
