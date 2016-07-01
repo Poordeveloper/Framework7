@@ -61,6 +61,6 @@
     "test": "gulp test",
     "preinstall": "npm i -g uglify-js;npm i -g csso",
     "custom": "gulp custom -searchbar,messages,modals,smart-select,virtual-list,infinite-scroll,scroll-toolbars,tabs,fast-clicks,push-state,swipeout;npm run min",
-    "min": "uglifyjs custom/js/framework7.custom.min.js -p 10 -c -m -o custom/js/framework7.custom.min.js;csso custom/css/framework7.ios.custom.min.css -o custom/css/framework7.ios.custom.min.css"
+    "min": "uglifyjs custom/js/framework7.custom.min.js -p 10 -c -m -o custom/js/framework7.custom.min.js;csso custom/css/framework7.ios.custom.min.css -o custom/css/framework7.ios.custom.min.css;uglifyjs src/js/ext.js -m >> custom/js/framework7.custom.min.js;cat src/js/ext.js >> custom/js/framework7.custom.js;"
   }
 }

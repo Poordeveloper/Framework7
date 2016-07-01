@@ -1,0 +1,4 @@
+#!/bin/sh
+
+scp custom/js/framework7.custom.min.js www@ali:buyw.com.cn/public/f7.js
+scp custom/css/framework7.ios.custom.min.css www@ali:buyw.com.cn/public/f7.css
