@@ -30,7 +30,7 @@ app.showTab = function (tab, tabLink, force) {
     var isSwipeableTabs = tabs.parent().hasClass('tabs-swipeable-wrap'), swiper;
     if (isSwipeableTabs) {
         swiper = tabs.parent()[0].swiper;
-        if (swiper.activeIndex !== newTab.index()) swiper.slideTo(newTab.index(), undefined, false);
+        if (swiper.activeIndex !== newTab.index()) swiper.slideTo(newTab.index(), undefined);
     }
 
     // Remove active class from old tabs

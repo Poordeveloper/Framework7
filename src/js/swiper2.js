@@ -9,12 +9,6 @@ window.Swiper = function (container, params) {
         autoplay: false,
         autoplayDisableOnInteraction: true,
         autoplayStopOnLast: false,
-        // Set wrapper width
-        setWrapperSize: false,
-        // Virtual Translate
-        virtualTranslate: false,
-        // Hash Navigation
-        hashnav: false,
         // Slides grid
         spaceBetween: 0,
         slidesPerView: 1,
@@ -49,11 +43,6 @@ window.Swiper = function (container, params) {
         paginationFractionRender: null,
         paginationCustomRender: null,
         paginationType: 'bullets', // 'bullets' or 'progress' or 'fraction' or 'custom'
-        // Resistance
-        resistance: true,
-        resistanceRatio: 0.85,
-        // Progress
-        watchSlidesVisibility: false,
         // Cursor
         grabCursor: false,
         // Clicks
@@ -88,7 +77,6 @@ window.Swiper = function (container, params) {
         // Callbacks
         runCallbacksOnInit: true
     };
-    var initialVirtualTranslate = params && params.virtualTranslate;
     
     params = params || {};
     var originalParams = {};
@@ -198,17 +186,6 @@ window.Swiper = function (container, params) {
     };
     // s.isH = isH;
     
-    // RTL
-    s.rtl = s.isHorizontal() && (s.container[0].dir.toLowerCase() === 'rtl' || s.container.css('direction') === 'rtl');
-    if (s.rtl) {
-        s.classNames.push('swiper-container-rtl');
-    }
-    
-    // Wrong RTL support
-    if (s.rtl) {
-        s.wrongRTL = s.wrapper.css('display') === '-webkit-box';
-    }
-    
     // Columns
     if (s.params.slidesPerColumn > 1) {
         s.classNames.push('swiper-container-multirow');
@@ -224,9 +201,6 @@ window.Swiper = function (container, params) {
     
     // Translate
     s.translate = 0;
-    
-    // Velocity
-    s.velocity = 0;
     
     /*=========================
       Locks, unlocks
@@ -389,8 +363,7 @@ window.Swiper = function (container, params) {
     
         s.virtualSize = -spaceBetween;
         // reset margins
-        if (s.rtl) s.slides.css({marginLeft: '', marginTop: ''});
-        else s.slides.css({marginRight: '', marginBottom: ''});
+        s.slides.css({marginRight: '', marginBottom: ''});
     
         var slidesNumberEvenToRows;
         if (s.params.slidesPerColumn > 1) {
@@ -520,15 +493,14 @@ window.Swiper = function (container, params) {
     
         if (s.params.spaceBetween !== 0) {
             if (s.isHorizontal()) {
-                if (s.rtl) s.slides.css({marginLeft: spaceBetween + 'px'});
-                else s.slides.css({marginRight: spaceBetween + 'px'});
+                s.slides.css({marginRight: spaceBetween + 'px'});
             }
             else s.slides.css({marginBottom: spaceBetween + 'px'});
         }
     };
     
     s.updateActiveIndex = function () {
-        var translate = s.rtl ? s.translate : -s.translate;
+        var translate = -s.translate;
         var newActiveIndex, i, snapIndex;
         for (i = 0; i < s.slidesGrid.length; i ++) {
             if (typeof s.slidesGrid[i + 1] !== 'undefined') {
@@ -1011,7 +983,6 @@ window.Swiper = function (container, params) {
         var diff = s.touches.diff = s.isHorizontal() ? s.touches.currentX - s.touches.startX : s.touches.currentY - s.touches.startY;
     
         diff = diff * s.params.touchRatio;
-        if (s.rtl) diff = -diff;
     
         s.swipeDirection = diff > 0 ? 'prev' : 'next';
         currentTranslate = diff + startTranslate;
@@ -1099,7 +1070,7 @@ window.Swiper = function (container, params) {
     
         var currentPos;
         if (s.params.followFinger) {
-            currentPos = s.rtl ? s.translate : -s.translate;
+            currentPos = -s.translate;
         }
         else {
             currentPos = -currentTranslate;
@@ -1200,7 +1171,7 @@ window.Swiper = function (container, params) {
         s.previousIndex = s.activeIndex || 0;
         s.activeIndex = slideIndex;
     
-        if ((s.rtl && -translate === s.translate) || (!s.rtl && translate === s.translate)) {
+        if (translate === s.translate) {
             // Update Height
             s.updateClasses();
             return false;
@@ -1261,9 +1232,6 @@ window.Swiper = function (container, params) {
                 }
             }
         }
-        if (s.params.hashnav && s.hashnav) {
-            s.hashnav.setHash();
-        }
     
     };
     s.slideNext = function (runCallbacks, speed, internal) {
@@ -1304,7 +1272,7 @@ window.Swiper = function (container, params) {
     s.setWrapperTranslate = function (translate, updateActiveIndex, byController) {
         var x = 0, y = 0, z = 0;
         if (s.isHorizontal()) {
-            x = s.rtl ? -translate : translate;
+            x = translate;
         }
         else {
             y = translate;
@@ -1315,7 +1283,7 @@ window.Swiper = function (container, params) {
             y = round(y);
         }
     
-        if (!s.params.virtualTranslate) {
+        {
             if (s.support.transforms3d) s.wrapper.transform('translate3d(' + x + 'px, ' + y + 'px, ' + z + 'px)');
             else s.wrapper.transform('translate(' + x + 'px, ' + y + 'px)');
         }
@@ -1336,17 +1304,8 @@ window.Swiper = function (container, params) {
         s.emit('onSetTranslate', s, s.translate);
     };
     
-    s.getTranslate = function (el, axis) {
+    s.getTranslate = function (el) {
         var matrix, curTransform, curStyle, transformMatrix;
-    
-        // automatic axis detection
-        if (typeof axis === 'undefined') {
-            axis = 'x';
-        }
-    
-        if (s.params.virtualTranslate) {
-            return s.rtl ? -s.translate : s.translate;
-        }
     
         curStyle = window.getComputedStyle(el, null);
         if (window.WebKitCSSMatrix) {
@@ -1365,7 +1324,7 @@ window.Swiper = function (container, params) {
             matrix = transformMatrix.toString().split(',');
         }
     
-        if (axis === 'x') {
+        {
             //Latest Chrome and webkits Fix
             if (window.WebKitCSSMatrix)
                 curTransform = transformMatrix.m41;
@@ -1376,25 +1335,10 @@ window.Swiper = function (container, params) {
             else
                 curTransform = parseFloat(matrix[4]);
         }
-        if (axis === 'y') {
-            //Latest Chrome and webkits Fix
-            if (window.WebKitCSSMatrix)
-                curTransform = transformMatrix.m42;
-            //Crazy IE10 Matrix
-            else if (matrix.length === 16)
-                curTransform = parseFloat(matrix[13]);
-            //Normal Browsers
-            else
-                curTransform = parseFloat(matrix[5]);
-        }
-        if (s.rtl && curTransform) curTransform = -curTransform;
         return curTransform || 0;
     };
-    s.getWrapperTranslate = function (axis) {
-        if (typeof axis === 'undefined') {
-            axis = s.isHorizontal() ? 'x' : 'y';
-        }
-        return s.getTranslate(s.wrapper[0], axis);
+    s.getWrapperTranslate = function () {
+        return s.getTranslate(s.wrapper[0]);
     };
     
     /*=========================
@@ -1535,9 +1479,6 @@ window.Swiper = function (container, params) {
         s.attachEvents();
         if (s.params.autoplay) {
             s.startAutoplay();
-        }
-        if (s.params.hashnav) {
-            if (s.hashnav) s.hashnav.init();
         }
         s.emit('onInit', s);
     };

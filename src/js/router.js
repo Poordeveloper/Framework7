@@ -600,6 +600,8 @@ app.router.load = function (view, options) {
         if (pageName.indexOf('?') > 0) {
             options.query = $.parseUrlQuery(pageName);
             options.pageName = pageName = pageName.split('?')[0];
+        } else {
+            options.query = {}
         }
     }
     var template = options.template;
