@@ -23,7 +23,6 @@ window.Framework7 = function (params) {
         router: true,
         // Push State
         pushState: false,
-        pushStateRoot: undefined,
         pushStateNoAnimation: false,
         pushStateSeparator: '#!/',
         pushStateOnLoad: true,

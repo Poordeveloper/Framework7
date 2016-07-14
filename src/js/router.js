@@ -397,17 +397,16 @@ app.router._load = function (view, options) {
     if (app.params.pushState && !options.reloadPrevious)  {
         if (!fullUrl) fullUrl = url;
         if (typeof pushState === 'undefined') pushState = true;
-        var pushStateRoot = app.params.pushStateRoot || '';
         var method = options.reload ? 'replaceState' : 'pushState';
         if (pushState) {
             if (!isDynamicPage && !pageName) {
-                history[method]({url: url, viewIndex: app.views.indexOf(view)}, '', pushStateRoot + app.params.pushStateSeparator + fullUrl);
+                history[method]({url: url, viewIndex: app.views.indexOf(view)}, '', app.params.pushStateSeparator + fullUrl);
             }
             else if (isDynamicPage && content) {
-                history[method]({content: typeof content === 'string' ? content : '', url: url, viewIndex: app.views.indexOf(view)}, '', pushStateRoot + app.params.pushStateSeparator + fullUrl);
+                history[method]({content: typeof content === 'string' ? content : '', url: url, viewIndex: app.views.indexOf(view)}, '', app.params.pushStateSeparator + fullUrl);
             }
             else if (pageName) {
-                history[method]({pageName: pageName, url: url, viewIndex: app.views.indexOf(view)}, '', pushStateRoot + app.params.pushStateSeparator + fullUrl);
+                history[method]({pageName: pageName, url: url, viewIndex: app.views.indexOf(view)}, '', app.params.pushStateSeparator + fullUrl);
             }
         }
     }
@@ -597,8 +596,8 @@ app.router.load = function (view, options) {
     var content = options.content;
     var pageName = options.pageName;
     if (pageName) {
-        if (pageName.indexOf('?') > 0) {
-            options.query = $.parseUrlQuery(pageName);
+        if ((url || pageName).indexOf('?') > 0) {
+            options.query = $.parseUrlQuery(url || pageName);
             options.pageName = pageName = pageName.split('?')[0];
         } else {
             options.query = {}
