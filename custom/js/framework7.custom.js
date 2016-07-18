@@ -13,7 +13,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: July 14, 2016
+ * Released on: July 18, 2016
  */
 (function () {
 
@@ -6507,7 +6507,7 @@
                 roundLengths: false,
                 // Touches
                 touchRatio: 1,
-                touchAngle: 45,
+                touchAngle: 30,
                 simulateTouch: true,
                 shortSwipes: true,
                 longSwipes: true,
@@ -7184,15 +7184,10 @@
                 var touchEventsTarget = s.params.touchEventsTarget === 'container' ? s.container[0] : s.wrapper[0];
                 var target = s.support.touch ? touchEventsTarget : document;
             
-                var moveCapture = s.params.nested ? true : false;
+                var moveCapture = false;
             
                 //Touch Events
-                if (s.browser.ie) {
-                    touchEventsTarget[action](s.touchEvents.start, s.onTouchStart, false);
-                    target[action](s.touchEvents.move, s.onTouchMove, moveCapture);
-                    target[action](s.touchEvents.end, s.onTouchEnd, false);
-                }
-                else {
+                {
                     if (s.support.touch) {
                         touchEventsTarget[action](s.touchEvents.start, s.onTouchStart, false);
                         touchEventsTarget[action](s.touchEvents.move, s.onTouchMove, moveCapture);
@@ -7415,17 +7410,9 @@
                 if (isScrolling) {
                     s.emit('onTouchMoveOpposite', s, e);
                 }
-                if (typeof startMoving === 'undefined' && s.browser.ieTouch) {
-                    if (s.touches.currentX !== s.touches.startX || s.touches.currentY !== s.touches.startY) {
-                        startMoving = true;
-                    }
-                }
                 if (!isTouched) return;
                 if (isScrolling)  {
                     isTouched = false;
-                    return;
-                }
-                if (!startMoving && s.browser.ieTouch) {
                     return;
                 }
                 s.allowClick = false;
@@ -7433,7 +7420,7 @@
                 // make swipe-to-go-back guesture works in first slide
                 if (s.activeIndex === 0 && s.touches.currentX > s.touches.startX) return;
                 e.preventDefault();
-                if (s.params.touchMoveStopPropagation && !s.params.nested) {
+                if (s.params.touchMoveStopPropagation) {
                     e.stopPropagation();
                 }
             
@@ -7580,6 +7567,11 @@
             
                 // Find current slide size
                 var ratio = (currentPos - s.slidesGrid[stopIndex]) / groupSize;
+        
+                if (Math.abs(s.touches.diff) <= 20) {
+                  s.slideTo(s.activeIndex);
+                  return;
+                }
             
                 if (timeDiff > s.params.longSwipesMs) {
                     // Long touches
@@ -8031,13 +8023,6 @@
             Prototype
         ====================================================*/
         Swiper.prototype = {
-            /*==================================================
-            Browser
-            ====================================================*/
-            browser: {
-                ie: window.navigator.pointerEnabled || window.navigator.msPointerEnabled,
-                ieTouch: (window.navigator.msPointerEnabled && window.navigator.msMaxTouchPoints > 1) || (window.navigator.pointerEnabled && window.navigator.maxTouchPoints > 1)
-            },
             /*==================================================
             Devices
             ====================================================*/
