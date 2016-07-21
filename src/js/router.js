@@ -597,10 +597,12 @@ app.router.load = function (view, options) {
     var content = options.content;
     var pageName = options.pageName;
     if (pageName) {
-        if (pageName.indexOf('?') > 0) {
-            options.query = $.parseUrlQuery(pageName);
-            options.pageName = pageName = pageName.split('?')[0];
-        }
+      if ((url || pageName).indexOf('?') > 0) {
+        options.query = $.parseUrlQuery(url || pageName);
+        options.pageName = pageName = pageName.split('?')[0];
+      } else {
+        options.query = {}
+      }
     }
     var template = options.template;
     if (view.params.reloadPages === true) options.reload = true;

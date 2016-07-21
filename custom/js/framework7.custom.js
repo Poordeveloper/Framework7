@@ -13,7 +13,7 @@
  * 
  * Licensed under MIT
  * 
- * Released on: July 2, 2016
+ * Released on: July 21, 2016
  */
 (function () {
 
@@ -2070,10 +2070,12 @@
             var content = options.content;
             var pageName = options.pageName;
             if (pageName) {
-                if (pageName.indexOf('?') > 0) {
-                    options.query = $.parseUrlQuery(pageName);
-                    options.pageName = pageName = pageName.split('?')[0];
-                }
+              if ((url || pageName).indexOf('?') > 0) {
+                options.query = $.parseUrlQuery(url || pageName);
+                options.pageName = pageName = pageName.split('?')[0];
+              } else {
+                options.query = {}
+              }
             }
             var template = options.template;
             if (view.params.reloadPages === true) options.reload = true;
@@ -9175,6 +9177,28 @@ function getContent(page) {
   return c;
 }
 $.getContent = getContent;
+
+if (typeof Object.assign != 'function') {
+  Object.assign = function(target) {
+    'use strict';
+    if (target == null) {
+      throw new TypeError('Cannot convert undefined or null to object');
+    }
+
+    target = Object(target);
+    for (var index = 1; index < arguments.length; index++) {
+      var source = arguments[index];
+      if (source != null) {
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+    }
+    return target;
+  };
+}
 
 function saveContext(page) {
   // getContent(page).scrollTop() always 0 if fromPage is another view,
